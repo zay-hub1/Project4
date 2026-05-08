@@ -142,4 +142,24 @@ class Player extends Actor {
       debounce.put(released, false);
     }
   }
-}
+  public void draw() {
+    super.draw(); //draws health bar from actor.
+    
+    //change color of health bar if low health
+    if (getHealth() < 0.3) {
+      fill(255,100,100); // red-ish
+    } else {
+      fill(0, 0, 255); //blue
+    }
+    
+    rect(5, 5, 30, 30);
+    
+    //direction indicator
+    fill(255);
+    switch(facing) {
+      case NORTH: rect(15, 0, 10, 10); break;
+      case SOUTH: rect(15, 30, 10, 10); break;
+      case EAST: rect(30, 15, 10, 10); break;
+      case WEST: rect(0, 15, 10, 10); break;
+    }
+  }
