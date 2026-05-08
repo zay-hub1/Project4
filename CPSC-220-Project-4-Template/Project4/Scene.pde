@@ -12,6 +12,7 @@
  */
 
 import java.util.LinkedList;
+import java.util.HashMap;
 
 class Scene {
   private int roomWidth;
@@ -31,15 +32,76 @@ class Scene {
    * Description: Resets the room to a random state
    */
 
-  private void reset(Direction entry) {
-    if (entry == null) {
-      return;
-    }
-
-    //----------------------------\\
-    // TODO: COMPLETE THIS METHOD \\
-    //----------------------------\\
+private void reset(Direction entry) {
+  if (entry == null) {
+    return;
   }
+
+  this.entry = entry;
+
+  this.roomWidth = 10;
+  this.roomHeight = 8;
+
+  this.room = new WorldObject[roomWidth][roomHeight];
+  this.positions = new HashMap<WorldObject, Position>();
+  this.enemies = new LinkedList<Actor>();
+  this.doors = new HashMap<Direction, Position>();
+
+  // make sure player exists
+  if (this.player == null) {
+    this.player = new Player(entry);
+  }
+
+  // place player
+  int px = roomWidth / 2;
+  int py = roomHeight / 2;
+
+  room[px][py] = player;
+  positions.put(player, new Position(px, py, this));
+
+  // obstacles
+  for (int i = 0; i < 10; i++) {
+    int x = int(random(roomWidth));
+    int y = int(random(roomHeight));
+
+    if (room[x][y] == null) {
+      room[x][y] = new Rock(x, y);
+    }
+  }
+
+  // potions
+  for (int i = 0; i < 3; i++) {
+    int x = int(random(roomWidth));
+    int y = int(random(roomHeight));
+
+    if (room[x][y] == null) {
+      room[x][y] = new Potion(x, y);
+    }
+  }
+
+for (int i = 0; i < 2; i++) {
+  int x = int(random(roomWidth));
+  int y = int(random(roomHeight));
+
+  if (room[x][y] == null) {
+    room[x][y] = new Sword(x, y);
+  }
+}
+
+  // enemies
+  for (int i = 0; i < 3; i++) {
+    int x = int(random(roomWidth));
+    int y = int(random(roomHeight));
+
+    if (room[x][y] == null) {
+      Skeleton s = new Skeleton(10, 2, Direction.SOUTH);
+
+        room[x][y] = s;
+        enemies.add(s);
+        positions.put(s, new Position(x, y, this));
+    }
+  }
+}
 
   /**
    *      Method: private updateActions()

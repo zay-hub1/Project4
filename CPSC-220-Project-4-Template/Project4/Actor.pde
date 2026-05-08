@@ -32,6 +32,7 @@ abstract class Actor extends WorldObject {
     this.validActions = new HashMap<Action, Boolean>();
   }
 
+
   /**
    * Constructor: public Actor()
    *  Parameters: JSONObject object - A JSON serialization of the actor
@@ -85,6 +86,9 @@ abstract class Actor extends WorldObject {
     return this.damage;
   }
 
+public void increaseDamage(int amount) {
+    this.damage += amount;
+}
   /**
    *      Method: public updateHealth()
    *  Parameters: int change - The amount of health to update
