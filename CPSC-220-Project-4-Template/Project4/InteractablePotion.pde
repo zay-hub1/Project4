@@ -40,6 +40,10 @@ public boolean interact(Player player) {
     }
 
     player.updateHealth(5);
+    
+    //MAKS
+    pickupSound.play();
+    
     return true;
   }
 }

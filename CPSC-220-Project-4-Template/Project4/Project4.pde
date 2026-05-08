@@ -8,6 +8,12 @@
  *        File: Project4.pde
  * Description: A dungeon crawler game
  */
+import processing.sound.*;
+
+SoundFile music;
+SoundFile attackSound;
+SoundFile pickupSound;
+Soundfile hitSound;
 
 Scene scene;
 String fileName;
@@ -35,6 +41,12 @@ void setup() {
     file.getParentFile().mkdirs();
     saveJSONObject(data, fileName);
   }
+  music = new SoundFile(this, "TITMH.mp3");
+  attackSound = new SoundFile(this, "PlayerStrike.wav");
+  pickupSound = new SoundFile(this, "ItemPickup.wav");
+  hitSound = new SoundFile(this, "PlayerDamaged.wav");
+  
+  music.loop();
 }
 
 /**

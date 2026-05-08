@@ -29,6 +29,10 @@ class Sword extends Interactable {
 
     public boolean interact(Player player) {
         player.increaseDamage(2);
+        
+        //MAKS
+        pickupSound.play();
+        
         return true;
     }
 }

@@ -32,15 +32,10 @@ class Scene {
    * Description: Resets the room to a random state
    */
 
-<<<<<<< HEAD
 private void reset(Direction entry) {
   if (entry == null) {
     return;
-=======
-  private void reset(Direction entry) {
-    if (entry == null) {
-      return;
-    }
+    
 
     //----------------------------\\
     // TODO: test \\
@@ -241,6 +236,15 @@ for (int i = 0; i < 2; i++) {
 
         if (enemy.getHealth() > 0) {
           enemy.updateHealth(-actor.getDamage());
+          
+          
+          // MAKS ADDED THIS BELOW
+          if(actor == this.player) {
+            attackSound.play(); // player attacking
+          } else {
+            hitSound.play(); // player getting hit
+          }
+          
         } else {
           this.room[x][y] = null;
         }

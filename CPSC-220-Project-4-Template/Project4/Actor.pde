@@ -85,10 +85,6 @@ abstract class Actor extends WorldObject {
   public int getDamage() {
     return this.damage;
   }
-
-public void increaseDamage(int amount) {
-    this.damage += amount;
-}
   /**
    *      Method: public updateHealth()
    *  Parameters: int change - The amount of health to update
@@ -135,18 +131,19 @@ public void increaseDamage(int amount) {
    */
 
   abstract public Action getAction();
-  
+
   public void draw() {
-  float healthPercent = getHealth();
-  
-  // red background bar
-  fill(255, 0, 0);
-  rect(0, -6, 40, 5);
-  
-  //green current health
-  fill(0, 255, 0);
-  rect(0, -6, 40 * healthPercent, 5);
+    float healthPercent = getHealth();
+
+    // red background bar
+    fill(255, 0, 0);
+    rect(0, -6, 40, 5);
+
+    //green current health
+    fill(0, 255, 0);
+    rect(0, -6, 40 * healthPercent, 5);
   }
   public void increaseDamage(int amount) {
     this.damage += amount;
+  }
 }
