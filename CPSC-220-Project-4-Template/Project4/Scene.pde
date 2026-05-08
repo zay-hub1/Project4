@@ -32,9 +32,19 @@ class Scene {
    * Description: Resets the room to a random state
    */
 
+<<<<<<< HEAD
 private void reset(Direction entry) {
   if (entry == null) {
     return;
+=======
+  private void reset(Direction entry) {
+    if (entry == null) {
+      return;
+    }
+
+    //----------------------------\\
+    // TODO: test \\
+    //----------------------------\\
   }
 
   this.entry = entry;
