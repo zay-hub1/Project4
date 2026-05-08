@@ -12,13 +12,9 @@
 
 class Sword extends Interactable {
 
-    public Sword(int x, int y) {
-        super(x, y);
-    }
+    public Sword(int x, int y) {}
 
-    public Sword(JSONObject json) {
-        super(json);
-    }
+    public Sword(JSONObject json) {}
 
     public JSONObject serialize() {
         JSONObject obj = new JSONObject();

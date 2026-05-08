@@ -11,17 +11,9 @@
 
 class Potion extends Interactable { 
   
-  Potion(int x, int y) {
-    
-    super(x, y);
-    
-  }
+  Potion(int x, int y) {}
   
-  Potion(JSONObject json) {
-    
-    super(json);
-    
-  }
+  Potion(JSONObject json) {}
   
   public JSONObject serialize() {
     
