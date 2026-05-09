@@ -1,5 +1,5 @@
 /**
- *      Author: Prof. Morales
+ *      Author: Isaiah Foreman
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -15,6 +15,12 @@ import java.util.LinkedList;
 import java.util.HashMap;
 
 class Scene {
+
+/* Constructor: public scene(JSONObject data)
+   * Parameter: JSONObject data - saved scene data
+   * return: void 
+   * Description: initializes a new random dungeon.
+   */
 
 public JSONObject serialize() {
     JSONObject data = new JSONObject();
