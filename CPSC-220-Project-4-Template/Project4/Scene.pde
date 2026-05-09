@@ -63,12 +63,6 @@ private void reset(Direction entry) {
   if (entry == null) {
     return;
     
-
-    //----------------------------\\
-    // TODO: test \\
-    //----------------------------\\
-  }
-
   this.entry = entry;
 
   this.roomWidth = 10;
@@ -84,11 +78,34 @@ private void reset(Direction entry) {
     this.player = new Player(entry.inverse());
   }
 
-//Door positions
-  this.doors.put(Direction.NORTH, new Position(roomWidth / 2, 0, this));
-  this.doors.put(Direction.SOUTH, new Position(roomWidth / 2, roomHeight - 1, this));
-  this.doors.put(Direction.WEST, new Position(0, roomHeight / 2, this));
-  this.doors.put(Direction.EAST, new Position(roomWidth - 1, roomHeight / 2, this));
+for (Direction direction : Direction.value()) {
+    
+    //entry door
+    if (direction == entry.inverse() || random(1) < 0.75) {
+      switch (direction) {
+        
+     case NORTH: 
+      this.doors.put(direction,
+      new Position(roomWidth / 2, 0, this));
+      break;
+        
+      case SOUTH:
+       this.doors.put(direction,
+       new Position(roomWidth / 2, roomHeight - 1, this));
+       break;
+
+      case EAST:
+       this.doors.put(direction,
+       new Position(roomWidth - 1, roomHeight / 2, this));
+       break;
+
+      case WEST:
+       this.doors.put(direction,
+       new Position(0, roomHeight / 2, this));
+       break;
+      }
+    }
+  }
   
   Position start = this.doors.get(entry.inverse());
   
