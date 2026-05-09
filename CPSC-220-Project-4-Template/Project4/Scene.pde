@@ -427,6 +427,18 @@ for (int x = 0; x < this.roomwidth; ++x) {
     stroke(100);
     
     rect(drawX, drawY, size, size); 
+
+Position currrent = Position(x, y, this);
+    
+    //draws door
+    for (Direction direction : this.doors.keySet()) {
+      Position door = this.doors.get(diresction);
+      
+      if (door != null && door.equal(current)) { 
+        fill(255, 255, 0);
+        rect(drawX + size * 0.25, drawY + size * 0.5, size * 0.5);
+      }
+    }
     
     if (this.room[x][y] != null) {
       
