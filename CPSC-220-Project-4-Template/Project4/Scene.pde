@@ -15,6 +15,16 @@ import java.util.LinkedList;
 import java.util.HashMap;
 
 class Scene {
+
+public JSONObject serialize() {
+    JSONObject data = new JSONObject();
+    
+    data.setInt("roomWidth", this.roomWidth);
+    data.setInt("roomHeight", this.roomHeight);
+    
+    return data; 
+  }
+
   private int roomWidth;
   private int roomHeight;
   private WorldObject[][] room;
@@ -23,6 +33,23 @@ class Scene {
   private LinkedList<Actor> enemies;
   private HashMap<WorldObject, Position> positions;
   private HashMap<Direction, Position> doors;
+
+public Scene() { 
+    Direction[] directions = Direction.values();
+    Direction direction = directions[int(random(directions.length))];
+    
+    this.player = new Player(direction);
+    this.reset(direction);
+  }
+  
+  public Scene(JSONObject data) {
+    Direction[] directions = Direction.values();
+    Direction direction = directions[int(random(directions.length))];
+    
+    this.player = new Player(direction);
+    this.reset(direction);
+    
+  }
 
   /**
    *      Method: private reset()
@@ -54,7 +81,19 @@ private void reset(Direction entry) {
 
   // make sure player exists
   if (this.player == null) {
-    this.player = new Player(entry);
+    this.player = new Player(entry.inverse());
+  }
+
+//Door positions
+  this.doors.put(Direction.NORTH, new Position(roomWidth / 2, 0, this));
+  this.doors.put(Direction.SOUTH, new Position(roomWidth / 2, roomHeight - 1, this));
+  this.doors.put(Direction.WEST, new Position(0, roomHeight / 2, this));
+  this.doors.put(Direction.EAST, new Position(roomWidth - 1, roomHeight / 2, this));
+  
+  Position start = this.doors.get(entry.inverse());
+  
+  this.positions.put(this.player, start);
+  this.room[start.getX()][start.getY()] = this.player;
   }
 
   // place player
