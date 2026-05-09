@@ -1,1 +1,19 @@
+class Obstacle extend WorldObject { 
+
+ public Obstacle() { 
+}
+
+public JSONObject serialize() {
+  JSONObject object = new JSONObject();
+  object.setString("className", Obstacle");
+  return object;
+}
+
+public void draw() {
+ fill(120);
+ rectMode(CENTER);
+ rect(0, 0, 30, 30);
+ rectMode(CORNER);
+}
+}
 
