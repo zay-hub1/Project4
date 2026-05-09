@@ -113,6 +113,36 @@ for (Direction direction : Direction.value()) {
   this.room[start.getX()][start.getY()] = this.player;
   }
 
+//random obstacles
+   for (int x = 0; x < this.roomWidth; ++x)  {
+     for (int y = 0; y < this.roomHeight; ++y) {
+       
+       //skip filled tiles
+       if (this.room[x][y] != null) {
+         continue;
+       }
+       
+       //skip door tiles 
+       boolean isDoor = false;
+       
+       for (Position door : this.doors.values()) {
+         if (door.getX() == x && door.getY() == y) {
+           isDoor = true;
+           break;
+         }
+       }
+       
+       if (isDoor) {
+         continue;
+       }
+       
+       // % chance to place obstacle 
+       if (random(1) < 0.15) {
+         this.room[x][y] = new Obstacle();
+       }
+     }
+   }
+
   // place player
   int px = roomWidth / 2;
   int py = roomHeight / 2;
