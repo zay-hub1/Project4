@@ -16,6 +16,12 @@ import java.util.HashMap;
 
 class Scene {
 
+/* Constructor: public scene(JSONObject data)
+   * Parameter: JSONObject data - saved scene data
+   * return: void 
+   * Description: initializes a new random dungeon.
+   */
+
 public JSONObject serialize() {
     JSONObject data = new JSONObject();
     
