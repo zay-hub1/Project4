@@ -11,7 +11,12 @@
 
 
 class Rock extends WorldObject {
-  
+  /** 
+  * Constructor: public Rock()
+  * Parameters: int x - X position
+  *             int y - Y position
+  * Description: Creates obstacle object
+  **/
     private int x;
     private int y;
 
@@ -33,8 +38,18 @@ class Rock extends WorldObject {
         return obj;
     }
 
+/**
+* Method: public serialize()
+* Description: Converts the rock object into JSON format
+**/
+
     public void draw() {
         fill(100);
         rect(0, 0, 40, 40);
+/**
+* Method: public draw
+* Parameters: void
+* Description: Draws the rock obstacle on scene
+**/
     }
 }

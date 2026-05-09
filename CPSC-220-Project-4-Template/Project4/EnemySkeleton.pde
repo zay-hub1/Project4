@@ -16,6 +16,13 @@ class Skeleton extends Actor {
   Skeleton(int health, int damage, Direction facing){
     super(health, damage, facing);
   }
+  /**
+  * Constructor: public Skeleton()
+  * Parameters: int health - Skeleton health value
+  *             int damage - Skeleton damage value
+  *             Direction facing - starting direction
+  * Discription: creates a skeleton enemy actor
+  **/
   
   Skeleton(JSONObject json) {
     super(json);
@@ -28,6 +35,12 @@ class Skeleton extends Actor {
     return obj;
     
   }
+  /**
+  * Method: public serialize()
+  * Parameters: void
+  * Return: JSONObject - serialized enemy data
+  * Description: converts the skeleton actor into JSON format
+  **/
   
   public void draw() {
     super.draw();
@@ -36,6 +49,12 @@ class Skeleton extends Actor {
     rect(5, 5, 30, 30);
     
   }
+  /**
+  * Method: public draw()
+  * Parameters: void
+  * Return: void
+  * Description: draws the skeleton enemy and health bar
+  **/
   
   public Action getAction() {
     //attack first
@@ -44,6 +63,12 @@ class Skeleton extends Actor {
         return action;
       }
     }
+    /**
+    * Method: public getAction()
+    * Parameters: void
+    * Return: Action
+    * Description: Determines the skeleton enemy's next move/attack
+    **/
     
     //random moves
     if (moves.size() > 0) {

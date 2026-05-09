@@ -24,6 +24,12 @@ class Potion extends Interactable {
     return obj;
     
   }
+  /**
+  * Constructor: public Potion()
+  * Parameters: int x - X position
+  *             int y - Y position
+  * Description: creates an interactionable potion object
+  **/
   
   public void draw() {
     
@@ -32,12 +38,24 @@ class Potion extends Interactable {
     ellipse(20, 20, 25, 25);
     
   }
+  /**
+  * Method: public draw()
+  * Parameters: void
+  * Return: void
+  * Description: draws the potion object on the screen
+  **/
   
 public boolean interact(Player player) {
 
     if (player.getHealth() >= 1.0f) {
         return false; // already full
     }
+/**
+* Method: public interact()
+* Parameters: Player player
+* Return: boolean
+* Description: restores player health when interacted with
+**/
 
     player.updateHealth(5);
     

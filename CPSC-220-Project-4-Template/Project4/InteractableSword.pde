@@ -21,6 +21,12 @@ class Sword extends Interactable {
         obj.setString("type", "Sword");
         return obj;
     }
+/**
+* Constructor: public Sword()
+* Parameters: int x - X position
+*             int y - Y position
+* Description: creates a sword object item that increases damage
+**/
 
     public void draw() {
         fill(200, 200, 50);
@@ -35,4 +41,10 @@ class Sword extends Interactable {
         
         return true;
     }
+    /**
+    * Method: public interact()
+    * Parameters: Player player
+    * Return: boolean
+    * Description: Increases player damage ability when collected
+    **/
 }
