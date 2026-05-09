@@ -489,16 +489,9 @@ Position currrent = Position(x, y, this);
     
     if (this.room[x][y] != null) {
       
-      // blue player 
-      if (this.room[x][y] instanceof Player)
-      fill(0, 0, 255);
+      pushMatrix();
+      translate(drawX + size / 2, drawY + size / 2);
+      this.room[x][y].draw();
       
-      // objects red 
-    } else {
-      fill(255, 0, 0);
-    }
-    
-    ellipse(drawX + size / 2, drawY + size / 2, size * 0.6, size * 0.6);
-  }
-  }
+      popMatrix();
 }
