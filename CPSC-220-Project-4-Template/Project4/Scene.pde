@@ -415,8 +415,31 @@ for (int i = 0; i < 2; i++) {
     // Determine the floor size
     float size = min((float)width / (this.roomWidth + 2), (float)height / (this.roomHeight + 2));
 
-    //----------------------------\\
-    // TODO: COMPLETE THIS METHOD \\
-    //----------------------------\\
+    float offsetX = (width - this.roomWidth * size) / 2; 
+float offsetY = (height - this.roomHeight * size) / 2;
+
+//floor tiles 
+for (int x = 0; x < this.roomwidth; ++x) { 
+  for (int y = 0; y < this.roomHeight; ++y) {
+    
+    // floor color 
+    fill(50);
+    stroke(100);
+    
+    rect(drawX, drawY, size, size); 
+    
+    if (this.room[x][y] != null) {
+      
+      // blue player 
+      if (this.room[x][y] instanceof Player)
+      fill(0, 0, 255);
+      
+      // objects red 
+    } else {
+      fill(255, 0, 0);
+    }
+    
+    ellipse(drawX + size / 2, drawY + size / 2, size * 0.6, size * 0.6);
+  }
   }
 }
