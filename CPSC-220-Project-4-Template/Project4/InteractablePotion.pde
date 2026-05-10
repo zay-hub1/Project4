@@ -59,7 +59,7 @@ class Potion extends Interactable {
      * Description: restores player health when interacted with
      **/
 
-    player.updateHealth(5);
+    player.updateHealth(8);
 
     //MAKS
     pickupSound.play();
