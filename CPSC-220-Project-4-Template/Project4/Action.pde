@@ -11,13 +11,13 @@
 
 enum Action {
   MOVE_NORTH(Direction.NORTH, false),
-  MOVE_SOUTH(Direction.SOUTH, false),
-  MOVE_EAST(Direction.EAST, false),
-  MOVE_WEST(Direction.WEST, false),
-  ATTACK_NORTH(Direction.NORTH, true),
-  ATTACK_SOUTH(Direction.SOUTH, true),
-  ATTACK_EAST(Direction.EAST, true),
-  ATTACK_WEST(Direction.WEST, true);
+    MOVE_SOUTH(Direction.SOUTH, false),
+    MOVE_EAST(Direction.EAST, false),
+    MOVE_WEST(Direction.WEST, false),
+    ATTACK_NORTH(Direction.NORTH, true),
+    ATTACK_SOUTH(Direction.SOUTH, true),
+    ATTACK_EAST(Direction.EAST, true),
+    ATTACK_WEST(Direction.WEST, true);
 
   public final Direction direction;
   public final boolean isAttack;

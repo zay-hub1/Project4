@@ -8,12 +8,13 @@
  *        File: Project4.pde
  * Description: A dungeon crawler game
  */
+import java.io.File;
 import processing.sound.*;
 
 SoundFile music;
 SoundFile attackSound;
 SoundFile pickupSound;
-Soundfile hitSound;
+SoundFile hitSound;
 
 Scene scene;
 String fileName;
@@ -45,7 +46,7 @@ void setup() {
   attackSound = new SoundFile(this, "PlayerStrike.wav");
   pickupSound = new SoundFile(this, "ItemPickup.wav");
   hitSound = new SoundFile(this, "PlayerDamaged.wav");
-  
+
   music.loop();
 }
 
@@ -60,6 +61,11 @@ void setup() {
 
 void draw() {
   background(0);
+
+  fill(255);
+  textSize(16);
+  text("WASD = Move | SPACE = Attack", 20, 30);
+  text("Kill all enemies to unlock doors", 20, 50);
 
   if (scene.tryTurn()) {
     // Save the state of the scene
@@ -91,11 +97,6 @@ void keyReleased() {
   scene.keyReleased();
 }
 
+// Make potions do a little more.
 
-//THIS IS A CHANGE BEING MADE...
-
-//THIS IS CHANGE 2
-
-// This is change 3
-
-//Make a change 4
+// Add sound for health

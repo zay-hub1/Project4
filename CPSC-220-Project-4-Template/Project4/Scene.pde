@@ -10,25 +10,23 @@
  *              and all objects within those rooms,
  *              including the player and enemies
  */
-
-import java.util.LinkedList;
-import java.util.HashMap;
+import java.util.*;
 
 class Scene {
 
-/* Constructor: public scene(JSONObject data)
+  /* Constructor: public scene(JSONObject data)
    * Parameter: JSONObject data - saved scene data
-   * return: void 
+   * return: void
    * Description: initializes a new random dungeon.
    */
 
-public JSONObject serialize() {
+  public JSONObject serialize() {
     JSONObject data = new JSONObject();
-    
+
     data.setInt("roomWidth", this.roomWidth);
     data.setInt("roomHeight", this.roomHeight);
-    
-    return data; 
+
+    return data;
   }
 
   private int roomWidth;
@@ -40,21 +38,20 @@ public JSONObject serialize() {
   private HashMap<WorldObject, Position> positions;
   private HashMap<Direction, Position> doors;
 
-public Scene() { 
+  public Scene() {
     Direction[] directions = Direction.values();
     Direction direction = directions[int(random(directions.length))];
-    
+
     this.player = new Player(direction);
     this.reset(direction);
   }
-  
+
   public Scene(JSONObject data) {
     Direction[] directions = Direction.values();
     Direction direction = directions[int(random(directions.length))];
-    
+
     this.player = new Player(direction);
     this.reset(direction);
-    
   }
 
   /**
@@ -65,140 +62,219 @@ public Scene() {
    * Description: Resets the room to a random state
    */
 
-private void reset(Direction entry) {
-  if (entry == null) {
-    return;
-    
-  this.entry = entry;
+  private void reset(Direction entry) {
+    if (entry == null) {
+      return;
+    }
 
-  this.roomWidth = 10;
-  this.roomHeight = 8;
+    this.entry = entry;
 
-  this.room = new WorldObject[roomWidth][roomHeight];
-  this.positions = new HashMap<WorldObject, Position>();
-  this.enemies = new LinkedList<Actor>();
-  this.doors = new HashMap<Direction, Position>();
+    this.roomWidth = 10;
+    this.roomHeight = 8;
 
-  // make sure player exists
-  if (this.player == null) {
-    this.player = new Player(entry.inverse());
-  }
+    this.room = new WorldObject[roomWidth][roomHeight];
+    this.positions = new HashMap<WorldObject, Position>();
+    this.enemies = new LinkedList<Actor>();
+    this.doors = new HashMap<Direction, Position>();
 
-for (Direction direction : Direction.value()) {
-    
-    //entry door
-    if (direction == entry.inverse() || random(1) < 0.75) {
-      switch (direction) {
-        
-     case NORTH: 
-      this.doors.put(direction,
-      new Position(roomWidth / 2, 0, this));
-      break;
-        
-      case SOUTH:
-       this.doors.put(direction,
-       new Position(roomWidth / 2, roomHeight - 1, this));
-       break;
+    // make sure player exists
+    if (this.player == null) {
+      this.player = new Player(entry.inverse());
+    }
 
-      case EAST:
-       this.doors.put(direction,
-       new Position(roomWidth - 1, roomHeight / 2, this));
-       break;
+    for (Direction direction : Direction.values()) {
 
-      case WEST:
-       this.doors.put(direction,
-       new Position(0, roomHeight / 2, this));
-       break;
+      //entry door
+      if (direction == entry.inverse() || random(1) < 0.75) {
+        switch (direction) {
+
+        case NORTH:
+          this.doors.put(direction,
+            new Position(roomWidth / 2, 0, this));
+          break;
+
+        case SOUTH:
+          this.doors.put(direction,
+            new Position(roomWidth / 2, roomHeight - 1, this));
+          break;
+
+        case EAST:
+          this.doors.put(direction,
+            new Position(roomWidth - 1, roomHeight / 2, this));
+          break;
+
+        case WEST:
+          this.doors.put(direction,
+            new Position(0, roomHeight / 2, this));
+          break;
+        }
       }
     }
-  }
-  
-  Position start = this.doors.get(entry.inverse());
-  
-  this.positions.put(this.player, start);
-  this.room[start.getX()][start.getY()] = this.player;
-  }
 
-//random obstacles
-   for (int x = 0; x < this.roomWidth; ++x)  {
-     for (int y = 0; y < this.roomHeight; ++y) {
-       
-       //skip filled tiles
-       if (this.room[x][y] != null) {
-         continue;
-       }
-       
-       //skip door tiles 
-       boolean isDoor = false;
-       
-       for (Position door : this.doors.values()) {
-         if (door.getX() == x && door.getY() == y) {
-           isDoor = true;
-           break;
-         }
-       }
-       
-       if (isDoor) {
-         continue;
-       }
-       
-       // % chance to place obstacle 
-       if (random(1) < 0.15) {
-         this.room[x][y] = new Obstacle();
-       }
-     }
-   }
+    Position doorPos = this.doors.get(entry.inverse());
 
-  // place player
-  int px = roomWidth / 2;
-  int py = roomHeight / 2;
+    Position start;
 
-  room[px][py] = player;
-  positions.put(player, new Position(px, py, this));
+    if (doorPos == null) {
+      start = new Position(roomWidth / 2, roomHeight / 2, this);
+    } else {
 
-  // obstacles
-  for (int i = 0; i < 10; i++) {
-    int x = int(random(roomWidth));
-    int y = int(random(roomHeight));
+      int px = doorPos.getX() + entry.x;
+      int py = doorPos.getY() + entry.y;
 
-    if (room[x][y] == null) {
-      room[x][y] = new Rock(x, y);
+      start = new Position(px, py, this);
     }
-  }
 
-  // potions
-  for (int i = 0; i < 3; i++) {
-    int x = int(random(roomWidth));
-    int y = int(random(roomHeight));
+    this.positions.put(this.player, start);
+    this.room[start.getX()][start.getY()] = this.player;
 
-    if (room[x][y] == null) {
-      room[x][y] = new Potion(x, y);
+
+    //random obstacles
+    for (int x = 0; x < this.roomWidth; ++x) {
+      for (int y = 0; y < this.roomHeight; ++y) {
+
+        //skip filled tiles
+        if (this.room[x][y] != null) {
+          continue;
+        }
+
+        //skip door tiles
+        boolean isDoor = false;
+
+        for (Position door : this.doors.values()) {
+          if (door.getX() == x && door.getY() == y) {
+            isDoor = true;
+            break;
+          }
+        }
+
+        if (isDoor) {
+          continue;
+        }
+
+        // % chance to place obstacle
+        if (random(1) < 0.05) {
+          this.room[x][y] = new Rock(x, y);
+        }
+      }
     }
-  }
 
-for (int i = 0; i < 2; i++) {
-  int x = int(random(roomWidth));
-  int y = int(random(roomHeight));
+    // obstacles
+    for (int i = 0; i < 10; i++) {
+      int x = int(random(roomWidth));
+      int y = int(random(roomHeight));
 
-  if (room[x][y] == null) {
-    room[x][y] = new Sword(x, y);
-  }
-}
+      if (room[x][y] == null) {
 
-  // enemies
-  for (int i = 0; i < 3; i++) {
-    int x = int(random(roomWidth));
-    int y = int(random(roomHeight));
+        // prevent placing on doors
+        boolean isDoor = false;
+        for (Position door : this.doors.values()) {
+          if (door.getX() == x && door.getY() == y) {
+            isDoor = true;
+            break;
+          }
+        }
 
-    if (room[x][y] == null) {
-      Skeleton s = new Skeleton(10, 2, Direction.SOUTH);
+        if (isDoor) continue;
+
+        // prevent placing on player
+        Position playerPos = this.positions.get(this.player);
+        if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
+          continue;
+        }
+
+        room[x][y] = new Rock(x, y);
+      }
+    }
+
+    // potions
+    for (int i = 0; i < 3; i++) {
+      int x = int(random(roomWidth));
+      int y = int(random(roomHeight));
+
+      if (room[x][y] == null) {
+
+        boolean isDoor = false;
+        for (Position door : this.doors.values()) {
+          if (door.getX() == x && door.getY() == y) {
+            isDoor = true;
+            break;
+          }
+        }
+
+        if (isDoor) continue;
+
+        // prevent placing on player
+        Position playerPos = this.positions.get(this.player);
+        if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
+          continue;
+        }
+
+        room[x][y] = new Potion(x, y);
+      }
+    }
+
+    // Swords
+    for (int i = 0; i < 2; i++) {
+      int x = int(random(roomWidth));
+      int y = int(random(roomHeight));
+
+      if (room[x][y] == null) {
+
+        // prevent placing on doors
+        boolean isDoor = false;
+        for (Position door : this.doors.values()) {
+          if (door.getX() == x && door.getY() == y) {
+            isDoor = true;
+            break;
+          }
+        }
+
+        if (isDoor) continue;
+
+        // prevent placing on player
+        Position playerPos = this.positions.get(this.player);
+        if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
+          continue;
+        }
+
+        room[x][y] = new Sword(x, y);
+      }
+    }
+
+    // enemies
+    for (int i = 0; i < 3; i++) {
+      int x = int(random(roomWidth));
+      int y = int(random(roomHeight));
+
+      if (room[x][y] == null) {
+
+        // prevent placing on doors
+        boolean isDoor = false;
+        for (Position door : this.doors.values()) {
+          if (door.getX() == x && door.getY() == y) {
+            isDoor = true;
+            break;
+          }
+        }
+
+        if (isDoor) continue;
+
+        // prevent placing on player
+        Position playerPos = this.positions.get(this.player);
+        if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
+          continue;
+        }
+
+        Skeleton s = new Skeleton(20, 10, Direction.SOUTH);
 
         room[x][y] = s;
         enemies.add(s);
         positions.put(s, new Position(x, y, this));
+      }
     }
   }
-}
+
 
   /**
    *      Method: private updateActions()
@@ -209,7 +285,7 @@ for (int i = 0; i < 2; i++) {
    */
 
   private void updateActions(Actor actor) {
-    for (Action action: Action.values()) {
+    for (Action action : Action.values()) {
       actor.setActionValidity(action, this.isActionValid(actor, action));
     }
   }
@@ -233,6 +309,8 @@ for (int i = 0; i < 2; i++) {
     }
 
     // Get the player's action
+    this.updateActions(this.player);
+
     Action action = this.player.getAction();
 
     // If no action was chosen, do nothing
@@ -328,15 +406,14 @@ for (int i = 0; i < 2; i++) {
 
         if (enemy.getHealth() > 0) {
           enemy.updateHealth(-actor.getDamage());
-          
-          
+
+
           // MAKS ADDED THIS BELOW
-          if(actor == this.player) {
+          if (actor == this.player) {
             attackSound.play(); // player attacking
           } else {
             hitSound.play(); // player getting hit
           }
-          
         } else {
           this.room[x][y] = null;
         }
@@ -465,39 +542,41 @@ for (int i = 0; i < 2; i++) {
    */
 
   public void draw() {
-    // Determine the floor size
     float size = min((float)width / (this.roomWidth + 2), (float)height / (this.roomHeight + 2));
 
-    float offsetX = (width - this.roomWidth * size) / 2; 
-float offsetY = (height - this.roomHeight * size) / 2;
+    float offsetX = (width - this.roomWidth * size) / 2;
+    float offsetY = (height - this.roomHeight * size) / 2;
 
-//floor tiles 
-for (int x = 0; x < this.roomwidth; ++x) { 
-  for (int y = 0; y < this.roomHeight; ++y) {
-    
-    // floor color 
-    fill(50);
-    stroke(100);
-    
-    rect(drawX, drawY, size, size); 
+    for (int x = 0; x < this.roomWidth; ++x) {
+      for (int y = 0; y < this.roomHeight; ++y) {
 
-Position currrent = Position(x, y, this);
-    
-    //draws door
-    for (Direction direction : this.doors.keySet()) {
-      Position door = this.doors.get(diresction);
-      
-      if (door != null && door.equal(current)) { 
-        fill(255, 255, 0);
-        rect(drawX + size * 0.25, drawY + size * 0.5, size * 0.5);
+        float drawX = offsetX + x * size;
+        float drawY = offsetY + y * size;
+
+        fill(50);
+        stroke(100);
+        rect(drawX, drawY, size, size);
+
+        Position current = new Position(x, y, this);
+
+        // draw doors
+        for (Direction direction : this.doors.keySet()) {
+          Position door = this.doors.get(direction);
+
+          if (door != null && door.equals(current)) {
+            fill(255, 150, 0);
+            rect(drawX + size * 0.25, drawY + size * 0.25, size * 0.5, size * 0.5);
+          }
+        }
+
+        // draw objects
+        if (this.room[x][y] != null) {
+          pushMatrix();
+          translate(drawX + size / 2, drawY + size / 2);
+          this.room[x][y].draw();
+          popMatrix();
+        }
       }
     }
-    
-    if (this.room[x][y] != null) {
-      
-      pushMatrix();
-      translate(drawX + size / 2, drawY + size / 2);
-      this.room[x][y].draw();
-      
-      popMatrix();
+  }
 }

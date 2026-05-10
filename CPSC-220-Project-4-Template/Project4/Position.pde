@@ -57,8 +57,18 @@ class Position {
    * Description: Returns whether or not two positions are equivalent
    */
 
-  public boolean equals(Position other) {
-    return other != null && this.x == other.getX() && this.y == other.getY();
+  @Override
+    public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+
+    Position other = (Position) obj;
+    return this.x == other.x && this.y == other.y;
+  }
+
+  @Override
+    public int hashCode() {
+    return 31 * x + y;
   }
 
   /**
