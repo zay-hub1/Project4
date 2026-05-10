@@ -6,7 +6,7 @@
  *         Due: 2026-05-10
  *  Assignment: Project 4
  *        File: EnemySkeleton.pde
- * Description: Enemy actions
+ * Description: Enemy actor and actions
  */
 
 import java.util.ArrayList;
