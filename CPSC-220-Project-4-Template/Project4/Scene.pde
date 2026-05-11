@@ -182,7 +182,7 @@ class Scene {
 
 
     // obstacles
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 7; i++) {
       int x = int(random(roomWidth));
       int y = int(random(roomHeight));
 
@@ -289,7 +289,7 @@ class Scene {
 
         if (isDoor) continue;
 
-        int health = 10 + level * 4; // scale health
+        int health = 10 + level * 3; // scale health
 
         Skeleton s = new Skeleton(health, 10, Direction.SOUTH);
 
