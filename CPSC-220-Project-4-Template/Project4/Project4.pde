@@ -91,6 +91,9 @@ void draw() {
   textSize(16);
   text("WASD = Move | SPACE = Attack", 20, 30);
   text("Kill all enemies to unlock doors", 20, 50);
+  text("Music credits go to the artist Lemongrass", 20, 130);
+  text("Sound effect credits go to Valve/Gabe newell", 20, 150);
+ 
 
   // Level Counter
   text("level: " + scene.getLevel(), 20, 110);
@@ -105,7 +108,7 @@ void draw() {
   rect(20, 70, 200 * health, 20);
 
   fill(255);
-  text("Health", 20, 65);
+  text("Health", 20, 70);
 
 
 
