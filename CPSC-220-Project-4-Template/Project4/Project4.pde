@@ -91,24 +91,28 @@ void draw() {
   textSize(16);
   text("WASD = Move | SPACE = Attack", 20, 30);
   text("Kill all enemies to unlock doors", 20, 50);
-  text("Music credits go to the artist Lemongrass", 20, 130);
-  text("Sound effect credits go to Valve/Gabe newell", 20, 150);
+  
+  //Credits
+  text("Music credits go to the artist Lemongrass", 20, 180);
+  text("Sound effect credits go to Valve/Gabe newell", 20, 200);
+  text("Game developed by:", 20, 240);
+  text("Maks Zielanski, Jena Latorres, and Isaiah Foreman", 20, 260);
  
 
   // Level Counter
-  text("level: " + scene.getLevel(), 20, 110);
+  text("level: " + scene.getLevel(), 20, 140);
 
   // Health Bar
   float health = scene.getPlayer().getHealth(); // 0.0 > 1.0
 
   fill(255, 0, 0);
-  rect(20, 70, 200, 20);
+  rect(20, 100, 200, 20);
 
   fill(0, 255, 0);
-  rect(20, 70, 200 * health, 20);
+  rect(20, 100, 200 * health, 20);
 
   fill(255);
-  text("Health", 20, 70);
+  text("Health", 20, 92);
 
 
 
