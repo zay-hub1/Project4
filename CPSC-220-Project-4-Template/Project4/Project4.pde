@@ -1,5 +1,5 @@
 /**
- *      Author: Prof. Morales
+ *      Author: Prof. Morales, Maks Zielanski
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -15,6 +15,8 @@ SoundFile music;
 SoundFile attackSound;
 SoundFile pickupSound;
 SoundFile hitSound;
+SoundFile healthSound;
+SoundFile doorSound;
 
 Scene scene;
 String fileName;
@@ -46,6 +48,8 @@ void setup() {
   attackSound = new SoundFile(this, "PlayerStrike.wav");
   pickupSound = new SoundFile(this, "ItemPickup.wav");
   hitSound = new SoundFile(this, "PlayerDamaged.wav");
+  healthSound = new SoundFile(this, "Health.wav");
+  doorSound = new SoundFile(this, "Door.wav");
 
   music.loop();
 }
@@ -62,15 +66,48 @@ void setup() {
 void draw() {
   background(0);
 
+  if (scene.tryTurn()) {
+    // Save the state of the scene
+    saveJSONObject(scene.serialize(), fileName);
+  }
+
+  if (scene.isGameOver()) {
+
+    fill(0, 200);
+    rect(0, 0, width, height);
+
+    fill(255, 0, 0);
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    text("GAME OVER", width/2, height/2);
+
+    textAlign(LEFT, BASELINE);
+
+    return;
+  }
+
+  // Instructions
   fill(255);
   textSize(16);
   text("WASD = Move | SPACE = Attack", 20, 30);
   text("Kill all enemies to unlock doors", 20, 50);
 
-  if (scene.tryTurn()) {
-    // Save the state of the scene
-    saveJSONObject(scene.serialize(), fileName);
-  }
+  // Level Counter
+  text("level: " + scene.getLevel(), 20, 110);
+
+  // Health Bar
+  float health = scene.getPlayer().getHealth(); // 0.0 > 1.0
+
+  fill(255, 0, 0);
+  rect(20, 70, 200, 20);
+
+  fill(0, 255, 0);
+  rect(20, 70, 200 * health, 20);
+
+  fill(255);
+  text("Health", 20, 65);
+
+
 
   scene.draw();
 }
@@ -96,7 +133,3 @@ void keyPressed() {
 void keyReleased() {
   scene.keyReleased();
 }
-
-// Make potions do a little more.
-
-// Add sound for health

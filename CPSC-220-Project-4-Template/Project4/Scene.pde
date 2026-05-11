@@ -1,5 +1,5 @@
 /**
- *      Author: Isaiah Foreman, LaTorres
+ *      Author: Isaiah Foreman, LaTorres, Maks Zielanski
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -9,8 +9,25 @@
  * Description: The game scene that handles each room
  *              and all objects within those rooms,
  *              including the player and enemies
+ *
+ *              - procedural generation (doors, enemies, items, obstacles)
+ *              - player and enemy turn logic
+ *              - combat and movement validation
+ *              - level progression and scaling difficulty
+ *              - game over state with delayed reset
+ *
+ * Additional Features:
+ *              - Randomized door generation (not always 4 exits)
+ *              - Enemy spawn balancing (avoids unfair proximity)
+ *              - Sound effects for combat, items, and doors
  */
 import java.util.*;
+
+/**
+ * Class: Scene
+ * Represents a dungeon room and controls all gameplay logic
+ * including actors, objects, and turn execution.
+ */
 
 class Scene {
 
@@ -29,6 +46,9 @@ class Scene {
     return data;
   }
 
+  private boolean gameOver = false;
+  private int gameOverTimer = 0; // frames to show text
+  private int level =1;
   private int roomWidth;
   private int roomHeight;
   private WorldObject[][] room;
@@ -69,8 +89,8 @@ class Scene {
 
     this.entry = entry;
 
-    this.roomWidth = 10;
-    this.roomHeight = 8;
+    this.roomWidth = 11;
+    this.roomHeight = 9;
 
     this.room = new WorldObject[roomWidth][roomHeight];
     this.positions = new HashMap<WorldObject, Position>();
@@ -82,34 +102,34 @@ class Scene {
       this.player = new Player(entry.inverse());
     }
 
+
+
     for (Direction direction : Direction.values()) {
 
-      //entry door
-      if (direction == entry.inverse() || random(1) < 0.75) {
-        switch (direction) {
+      //Always add entry door
+      if (direction == entry.inverse()) {
+        addDoor(direction);
+        continue;
+      }
 
-        case NORTH:
-          this.doors.put(direction,
-            new Position(roomWidth / 2, 0, this));
-          break;
-
-        case SOUTH:
-          this.doors.put(direction,
-            new Position(roomWidth / 2, roomHeight - 1, this));
-          break;
-
-        case EAST:
-          this.doors.put(direction,
-            new Position(roomWidth - 1, roomHeight / 2, this));
-          break;
-
-        case WEST:
-          this.doors.put(direction,
-            new Position(0, roomHeight / 2, this));
-          break;
-        }
+      //Random chance for other doors
+      if (random(1) < 0.6) {
+        addDoor(direction);
       }
     }
+
+    //Make sure atleast one extra door exists
+    if (this.doors.size() <= 1) {
+      Direction[] dirs = Direction.values();
+      Direction randomDir;
+
+      do {
+        randomDir = dirs[int(random(dirs.length))];
+      } while (randomDir == entry.inverse());
+
+      addDoor(randomDir);
+    }
+
 
     Position doorPos = this.doors.get(entry.inverse());
 
@@ -128,6 +148,7 @@ class Scene {
     this.positions.put(this.player, start);
     this.room[start.getX()][start.getY()] = this.player;
 
+    Position playerPos = this.positions.get(this.player);
 
     //random obstacles
     for (int x = 0; x < this.roomWidth; ++x) {
@@ -159,12 +180,13 @@ class Scene {
       }
     }
 
+
     // obstacles
     for (int i = 0; i < 10; i++) {
       int x = int(random(roomWidth));
       int y = int(random(roomHeight));
 
-      if (room[x][y] == null) {
+      if (room[x][y] == null && hasOpenNeighbor(x, y)) {
 
         // prevent placing on doors
         boolean isDoor = false;
@@ -178,7 +200,6 @@ class Scene {
         if (isDoor) continue;
 
         // prevent placing on player
-        Position playerPos = this.positions.get(this.player);
         if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
           continue;
         }
@@ -205,7 +226,6 @@ class Scene {
         if (isDoor) continue;
 
         // prevent placing on player
-        Position playerPos = this.positions.get(this.player);
         if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
           continue;
         }
@@ -233,7 +253,6 @@ class Scene {
         if (isDoor) continue;
 
         // prevent placing on player
-        Position playerPos = this.positions.get(this.player);
         if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
           continue;
         }
@@ -243,11 +262,21 @@ class Scene {
     }
 
     // enemies
-    for (int i = 0; i < 3; i++) {
+    int spawned = 0;
+
+    while (spawned < 3) {
       int x = int(random(roomWidth));
       int y = int(random(roomHeight));
 
-      if (room[x][y] == null) {
+      boolean tooClose = false;
+
+      if (playerPos != null) {
+        tooClose =
+          abs(playerPos.getX() - x) <= 2 &&
+          abs(playerPos.getY() - y) <= 2;
+      }
+
+      if (room[x][y] == null && !tooClose && hasOpenNeighbor(x, y)) {
 
         // prevent placing on doors
         boolean isDoor = false;
@@ -260,21 +289,18 @@ class Scene {
 
         if (isDoor) continue;
 
-        // prevent placing on player
-        Position playerPos = this.positions.get(this.player);
-        if (playerPos != null && playerPos.getX() == x && playerPos.getY() == y) {
-          continue;
-        }
+        int health = 10 + level * 4; // scale health
 
-        Skeleton s = new Skeleton(20, 10, Direction.SOUTH);
+        Skeleton s = new Skeleton(health, 10, Direction.SOUTH);
 
         room[x][y] = s;
         enemies.add(s);
         positions.put(s, new Position(x, y, this));
+
+        spawned++;
       }
     }
   }
-
 
   /**
    *      Method: private updateActions()
@@ -300,12 +326,36 @@ class Scene {
    */
 
   public boolean tryTurn() {
+
+    if (gameOverTimer > 0) {
+      gameOverTimer--;
+
+      if (gameOverTimer == 0) {
+
+        // ✅ NOW reset AFTER delay
+        Direction[] directions = Direction.values();
+        Direction direction = directions[int(random(directions.length))];
+
+        this.player = new Player(direction);
+        this.reset(direction);
+
+        gameOver = false;
+      }
+
+      return false; // freeze game during game over
+    }
+
     // If the player is dead, reset the room
     if (this.player == null || this.player.getHealth() == 0) {
-      Direction[] directions = Direction.values();
-      Direction direction = directions[int(random(directions.length))];
-      this.player = new Player(direction);
-      this.reset(direction);
+
+      //trigger game over state
+      if (!gameOver) {
+        gameOver = true;
+        gameOverTimer = 120;
+        level = 1;
+      }
+
+      return false;
     }
 
     // Get the player's action
@@ -343,11 +393,13 @@ class Scene {
       if (this.tryAction(enemy, action) && action.isAttack) {
         // If the player died, reset the room and save the game
         if (player.getHealth() == 0) {
-          Direction[] directions = Direction.values();
-          Direction direction = directions[int(random(directions.length))];
-          this.player = new Player(direction);
-          this.reset(direction);
-          return true;
+          if (!gameOver) {
+            gameOver = true;
+            gameOverTimer = 300;
+            level = 1;
+          }
+
+          return false;
         }
 
         // If the enemy attacked, save the game
@@ -387,6 +439,8 @@ class Scene {
       Position door = this.doors.get(action.direction);
 
       if (door != null && door.equals(position)) {
+        doorSound.play();
+        level++;
         this.reset(action.direction);
         return true;
       }
@@ -436,6 +490,7 @@ class Scene {
     // Check if the actor can move
     this.room[x][y] = actor;
     this.room[position.getX()][position.getY()] = null;
+    actor.facing = action.direction;
     position.move(action.direction);
     return true;
   }
@@ -508,12 +563,78 @@ class Scene {
     return roomHeight;
   }
 
+
+  /**
+   * Adds a door at the correct position based on direction.
+   */
+
+  private void addDoor(Direction direction) {
+
+    switch (direction) {
+
+    case NORTH:
+      this.doors.put(direction,
+        new Position(roomWidth / 2, 0, this));
+      break;
+
+    case SOUTH:
+      this.doors.put(direction,
+        new Position(roomWidth / 2, roomHeight - 1, this));
+      break;
+
+    case EAST:
+      this.doors.put(direction,
+        new Position(roomWidth - 1, roomHeight / 2, this));
+      break;
+
+    case WEST:
+      this.doors.put(direction,
+        new Position(0, roomHeight / 2, this));
+      break;
+    }
+  }
+
+  /**
+   * Checks if at least one adjacent tile is empty.
+   * Used to prevent blocking paths with obstacles or enemies.
+   */
+
+  private boolean hasOpenNeighbor(int x, int y) {
+    int[][] dirs = {
+      {0, -1}, {0, 1}, {1, 0}, {-1, 0}
+    };
+
+    for (int[] d : dirs) {
+      int nx = x + d [0];
+      int ny = y + d [1];
+
+      if (nx >= 0 && nx < roomWidth && ny >= 0 && ny < roomHeight) {
+        if (room[nx][ny] == null) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   /**
    *      Method: public keyPressed()
    *  Parameters: void
    *      Return: void
    * Description: Passes key press events to the player
    */
+
+  public Player getPlayer() {
+    return this.player;
+  }
+
+  public int getLevel() {
+    return this.level;
+  }
+
+  public boolean isGameOver() {
+    return this.gameOver;
+  }
 
   public void keyPressed() {
     if (this.player != null) {
@@ -533,6 +654,7 @@ class Scene {
       this.player.keyReleased();
     }
   }
+
 
   /**
    *      Method: public draw()
@@ -564,8 +686,34 @@ class Scene {
           Position door = this.doors.get(direction);
 
           if (door != null && door.equals(current)) {
-            fill(255, 150, 0);
+
+            // diff color if doors are locked
+            boolean locked = this.enemies.size() > 0;
+
+
+
+            // entry door diff color
+            if (direction == this.entry.inverse()) {
+              fill(185, 80, 0); // darker brown = where you came from
+            } else if (locked) {
+              fill(165, 60, 0); // even darker brown = locked
+            } else {
+              fill(255, 150, 0); // brown = normal doors
+            }
+
             rect(drawX + size * 0.25, drawY + size * 0.25, size * 0.5, size * 0.5);
+
+            if (locked && direction != this.entry.inverse()) {
+              fill(50);
+              rectMode(CENTER);
+              rect(drawX + size * 0.5, drawY + size * 0.5, size * 0.2, size * 0.25);
+              rectMode(CORNER);
+
+              fill(0);
+              rectMode(CENTER);
+              rect(drawX + size * 0.5, drawY + size * 0.5, size * 0.06, size * 0.1);
+              rectMode(CORNER);
+            }
           }
         }
 

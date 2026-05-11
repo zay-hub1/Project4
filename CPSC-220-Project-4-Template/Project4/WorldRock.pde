@@ -1,5 +1,5 @@
 /**
- *      Author: LaTorres
+ *      Author: LaTorres, Maks Zielanski
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -45,7 +45,10 @@ class Rock extends WorldObject {
 
   public void draw() {
     fill(120, 120, 120);
-    rect(0, 0, 40, 40);
+    rectMode(CENTER);
+    rect(0, 0, 60, 60);
+    rectMode(CORNER);
+    
     /**
      * Method: public draw
      * Parameters: void

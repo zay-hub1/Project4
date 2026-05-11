@@ -1,5 +1,5 @@
 /**
- *      Author: LaTorres
+ *      Author: LaTorres, Maks Zielanski
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -34,7 +34,9 @@ class Sword extends Interactable {
 
   public void draw() {
     fill(255, 255, 0);
+    rectMode(CENTER);
     rect(0, 0, 25, 25);
+    rectMode(CORNER);
   }
 
   public boolean interact(Player player) {

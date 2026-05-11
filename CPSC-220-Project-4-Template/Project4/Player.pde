@@ -153,23 +153,26 @@ class Player extends Actor {
       fill(0, 0, 255); //blue
     }
 
-    rect(5, 5, 30, 30);
+    rectMode(CENTER);
+    rect(0, 0, 30, 30);
 
     //direction indicator
     fill(255);
     switch(facing) {
     case NORTH:
-      rect(15, 0, 10, 10);
+      rect(0, -10, 10, 10);
       break;
     case SOUTH:
-      rect(15, 30, 10, 10);
+      rect(0, 10, 10, 10);
       break;
     case EAST:
-      rect(30, 15, 10, 10);
+      rect(10, 0, 10, 10);
       break;
     case WEST:
-      rect(0, 15, 10, 10);
+      rect(-10, 0, 10, 10);
       break;
     }
+
+    rectMode(CORNER);
   }
 }

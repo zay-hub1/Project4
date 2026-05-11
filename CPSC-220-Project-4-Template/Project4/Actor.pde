@@ -1,5 +1,5 @@
 /**
- *      Author: Prof. Morales
+ *      Author: Prof. Morales, Maks Zielanski
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -135,13 +135,17 @@ abstract class Actor extends WorldObject {
   public void draw() {
     float healthPercent = getHealth();
 
+    rectMode(CENTER);
+
     // red background bar
     fill(255, 0, 0);
-    rect(0, -6, 40, 5);
+    rect(0, -20, 40, 5);
 
     //green current health
     fill(0, 255, 0);
-    rect(0, -6, 40 * healthPercent, 5);
+    rect(-20 + (40 * healthPercent) / 2, -20, 40 * healthPercent, 5);
+
+    rectMode(CORNER);
   }
   public void increaseDamage(int amount) {
     this.damage += amount;

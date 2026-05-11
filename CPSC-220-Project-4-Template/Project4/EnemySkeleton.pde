@@ -1,5 +1,5 @@
 /**
- *      Author: LaTorres
+ *      Author: LaTorres, Maks Zielanski
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -44,8 +44,30 @@ class Skeleton extends Actor {
   public void draw() {
     super.draw();
 
+    rectMode(CENTER);
+
     fill(200, 0, 0);
-    rect(5, 5, 30, 30);
+    rect(0, 0, 30, 30);
+
+    //Enemy direction indicator
+    fill(255);
+
+    switch(facing) {
+    case NORTH:
+      rect(0, -10, 10, 10);
+      break;
+    case SOUTH:
+      rect(0, 10, 10, 10);
+      break;
+    case EAST:
+      rect(10, 0, 10, 10);
+      break;
+    case WEST:
+      rect(-10, 0, 10, 10);
+      break;
+    }
+
+    rectMode(CORNER);
   }
   /**
    * Method: public draw()

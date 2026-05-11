@@ -1,5 +1,5 @@
 /**
- *      Author: LaTorres
+ *      Author: LaTorres, Maks Zielanski
  *      Course: CPSC 220
  *  Instructor: Prof. Morales
  *     Created: 2026-04-15
@@ -37,8 +37,7 @@ class Potion extends Interactable {
   public void draw() {
 
     fill(0, 255, 0);
-
-    ellipse(20, 20, 25, 25);
+    ellipse(0, 0, 25, 25);
   }
   /**
    * Method: public draw()
@@ -59,10 +58,10 @@ class Potion extends Interactable {
      * Description: restores player health when interacted with
      **/
 
-    player.updateHealth(8);
+    player.updateHealth(10);
 
     //MAKS
-    pickupSound.play();
+    healthSound.play();
 
     return true;
   }
